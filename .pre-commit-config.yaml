@@ -1,0 +1,17 @@
+repos:
+  # Python linting and formatting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.11
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # SQL linting with sqlfluff using dbt templater
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.4.2
+    hooks:
+      - id: sqlfluff-lint
+        args: ["--dialect", "duckdb", "--templater", "dbt"]
+      - id: sqlfluff-fix
+        args: ["--dialect", "duckdb", "--templater", "dbt"]
