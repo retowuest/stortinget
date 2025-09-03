@@ -12,6 +12,8 @@ repos:
     rev: 3.4.2
     hooks:
       - id: sqlfluff-lint
+        additional_dependencies: [sqlfluff-templater-dbt]
         args: ["--dialect", "duckdb"]
       - id: sqlfluff-fix
+        additional_dependencies: [sqlfluff-templater-dbt]
         args: ["--dialect", "duckdb"]
