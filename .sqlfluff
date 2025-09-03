@@ -1,0 +1,18 @@
+[sqlfluff]
+# Use DuckDB dialect
+dialect = duckdb
+templater = dbt
+exclude_rules = L009,L031,L034
+
+[sqlfluff:rules]
+max_line_length = 120
+
+# Common readability tweaks
+[sqlfluff:rules:L010]  # keywords
+capitalisation_policy = lower
+
+[sqlfluff:rules:L014]  # unquoted identifiers
+capitalisation_policy = lower
+
+[sqlfluff:rules:L029]  # keyword spacing
+spacing_policy = consistent
