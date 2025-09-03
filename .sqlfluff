@@ -1,5 +1,4 @@
 [sqlfluff]
-# Use DuckDB dialect
 dialect = duckdb
 templater = dbt
 exclude_rules = L009,L031,L034
@@ -16,3 +15,8 @@ capitalisation_policy = lower
 
 [sqlfluff:rules:L029]  # keyword spacing
 spacing_policy = consistent
+
+# --- dbt integration ---
+[sqlfluff:templater:dbt]
+project_dir = ./dbt/
+profiles_dir = ./dbt/
