@@ -12,6 +12,6 @@ repos:
     rev: 3.4.2
     hooks:
       - id: sqlfluff-lint
-        args: ["--dialect", "duckdb", "--templater", "dbt"]
+        args: ["--dialect", "duckdb"]
       - id: sqlfluff-fix
-        args: ["--dialect", "duckdb", "--templater", "dbt"]
+        args: ["--dialect", "duckdb"]
