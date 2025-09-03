@@ -1,12 +1,9 @@
 [sqlfluff]
 dialect = duckdb
 templater = dbt
+max_line_length = 120
 exclude_rules = L009,L031,L034
 
-[sqlfluff:rules]
-max_line_length = 120
-
-# Common readability tweaks
 [sqlfluff:rules:L010]  # keywords
 capitalisation_policy = lower
 
