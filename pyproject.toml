@@ -1,7 +1,7 @@
 [project]
 name = "stortinget"
 version = "0.1.0"
-description = "Add your description here"
+description = "A toy project on the Norwegian parliament"
 readme = "README.md"
 requires-python = ">=3.13.7"
 dependencies = [
@@ -17,6 +17,10 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pre-commit>=4.3.0",
-    "pytest>=8.4.1",
     "ruff>=0.12.11",
+    "sqlfluff>=3.4.2",
+    "sqlfluff-templater-dbt>=3.4.2",
+]
+test = [
+    "pytest>=8.4.1",
 ]
