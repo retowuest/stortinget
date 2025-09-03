@@ -1,22 +1,19 @@
 [sqlfluff]
 dialect = duckdb
 templater = dbt
+max_line_length = 120
 exclude_rules = L009,L031,L034
 
-[sqlfluff:rules]
-max_line_length = 120
-
-# Common readability tweaks
-[sqlfluff:rules:L010]  # keywords
+[sqlfluff:rules:capitalisation.keywords]
 capitalisation_policy = lower
 
-[sqlfluff:rules:L014]  # unquoted identifiers
+[sqlfluff:rules:capitalisation.identifiers]
 capitalisation_policy = lower
 
-[sqlfluff:rules:L029]  # keyword spacing
+[sqlfluff:rules:references.keywords]
 spacing_policy = consistent
 
 # --- dbt integration ---
 [sqlfluff:templater:dbt]
-project_dir = ./dbt/
-profiles_dir = ./dbt/
+project_dir = ./dbt_project/
+profiles_dir = ./dbt_project/
