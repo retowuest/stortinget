@@ -16,4 +16,4 @@ spacing_policy = consistent
 # --- dbt integration ---
 [sqlfluff:templater:dbt]
 project_dir = ./dbt_project/
-profiles_dir = ./dbt_profiles/
+profiles_dir = ./dbt_project/
