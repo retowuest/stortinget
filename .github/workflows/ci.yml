@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+    branches: [ "**" ] # run on all branches
+  pull_request:        # run on all PRs
+  workflow_dispatch:   # allow manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      # Fetches repo code so CI can run checks
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      # 2. Set up uv
+      # Installs uv (latest version) and enables caching of environments
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          enable-cache: true
+      
+      # 3. Cache uv dependencies for faster CI runs
+      # Caches Python virtual environment and uv cache between CI runs
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/.local/share/uv
+            .venv
+          key: uv-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            uv-
+      
+      # 4. Cache DuckDB dev database
+      # Persists the dev.duckdb database file to speed up dbt compile/test between runs
+      - name: Cache DuckDB dev database
+        uses: actions/cache@v4
+        with:
+          path: dbt_project/dev.duckdb
+          key: duckdb-${{ hashFiles('dbt_project/models/**/*.sql') }}
+          restore-keys: |
+            duckdb-
+      
+      # 5. Install project dependencies
+      # Installs all runtime and dev dependencies from pyproject.toml / uv.lock
+      - name: Install dependencies
+        run: uv sync
+      
+      # ---------------------------------
+      # 6. Python code quality
+      # ---------------------------------
+      # 6a. Run Ruff lint
+      # Checks Python code for linting issues
+      - name: Run Ruff lint
+        run: uv run ruff check .
+      
+      # 6b. Run Ruff format
+      # Verifies Python code formatting
+      - name: Run Ruff Format
+        run: uv run ruff format --check .
+      
+      # 6c. Run pytest (unit tests only)
+      # Runs Python unit tests
+      - name: Run pytest (unit)
+        run: uv run pytest tests/unit
+      
+      # ---------------------------------
+      # 7. SQL / dbt code quality
+      # ---------------------------------
+      # 7a. Run SQLFluff lint on dbt models
+      # Lints only SQL models to avoid unnecessary warnings/errors
+      - name: Run SQLFluff lint
+        run: uv run sqlfluff lint ./dbt_project/models
+      
+      # 7b. Run dbt compile
+      # Compiles dbt models to validate models, macros, and Jinja templates
+      - name: Run dbt compile
+        working-directory: ./dbt_project
+        run: uv run dbt compile --profiles-dir .
+      
+      # 7c. Run dbt tests
+      # Runs unit checks on schema/data
+      - name: Run dbt test
+        working-directory: ./dbt_project
+        run: uv run dbt test --profiles-dir .
+      
+      # ---------------------------------
+      # 8. Optional: run pre-commit hooks
+      # ---------------------------------
+      # Ensures CI matches the pre-commit hooks run locally
+      - name: Run pre-commit hooks
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+  
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' # run only on main branch
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      # 2. Set up uv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          enable-cache: true
+      
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: uv sync
+      
+      # 4. Run integration tests
+      - name: Run pytest (integration)
+        run: uv run pytest tests/integration
+  
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' # run only on main branch
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      # 2. Set up uv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          enable-cache: true
+      
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: uv sync
+      
+      # 4. Run e2e tests
+      - name: Run pytest (e2e)
+        run: uv run pytest tests/e2e
