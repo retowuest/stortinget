@@ -24,3 +24,12 @@ dev = [
 test = [
     "pytest>=8.4.1",
 ]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+markers = [
+    "integration: marks tests as integration tests (require dbt/DuckDB/etc.)",
+    "e2e: marks tests as end-to-end pipeline tests (slow, orchestrated runs)",
+]
