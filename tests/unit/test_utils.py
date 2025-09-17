@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.unit
 def test_placeholder_unit():
-    """Placeholder unit test (fast, no DB/network)."""
+    """Placeholder unit test."""
     assert True  # Always passes for now
