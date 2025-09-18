@@ -9,19 +9,23 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      # 1a. Set up uv via composite action
+      # 1a. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # 1b. Set up uv via composite action
       - name: Set up uv
         uses: ./.github/actions/uv-setup
 
-      # 1b. Run Ruff lint
+      # 1c. Run Ruff lint
       - name: Run Ruff lint
         run: uv run ruff check .
 
-      # 1c. Run Ruff format
+      # 1d. Run Ruff format
       - name: Run Ruff format
         run: uv run ruff format --check .
 
-      # 1d. Run SQLFluff lint
+      # 1e. Run SQLFluff lint
       - name: Run SQLFluff lint
         run: uv run sqlfluff lint ./dbt_project/models
 
@@ -32,11 +36,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      # 2a. Set up uv via composite action
+      # 2a. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # 2b. Set up uv via composite action
       - name: Set up uv
         uses: ./.github/actions/uv-setup
 
-      # 2b. Run pytest
+      # 2c. Run pytest
       - name: Run pytest
         run: uv run pytest
 
@@ -47,11 +55,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      # 3a. Set up uv via composite action
+      # 3a. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # 3b. Set up uv via composite action
       - name: Set up uv
         uses: ./.github/actions/uv-setup
 
-      # 3b. Cache DuckDB dev database
+      # 3c. Cache DuckDB dev database
       - name: Cache DuckDB dev database
         uses: actions/cache@v4
         with:
@@ -60,12 +72,12 @@ jobs:
           restore-keys: |
             duckdb-
 
-      # 3c. Run dbt compile
+      # 3d. Run dbt compile
       - name: Run dbt compile
         working-directory: ./dbt_project
         run: uv run dbt compile --profiles-dir .
 
-      # 3d. Run dbt tests
+      # 3e. Run dbt tests
       - name: Run dbt test
         working-directory: ./dbt_project
         run: uv run dbt test --profiles-dir .
@@ -77,10 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pytest, dbt]
     steps:
-      # 4a. Set up uv via composite action
+      # 4a. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # 4b. Set up uv via composite action
       - name: Set up uv
         uses: ./.github/actions/uv-setup
 
-      # 4b. Run pre-commit hooks
+      # 4c. Run pre-commit hooks
       - name: Run pre-commit hooks
         run: uv run pre-commit run --all-files --show-diff-on-failure

@@ -10,18 +10,14 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # 1. Checkout repository
-    - name: Checkout repository
-      uses: actions/checkout@v5
-
-    # 2. Set up uv
+    # 1. Set up uv
     - name: Set up uv
       uses: astral-sh/setup-uv@v6
       with:
         version: "latest"
         enable-cache: true
 
-    # 3. Cache uv dependencies
+    # 2. Cache uv dependencies
     - name: Cache uv
       uses: actions/cache@v4
       with:
@@ -33,7 +29,7 @@ runs:
         restore-keys: |
           uv-
 
-    # 4. Install dependencies
+    # 3. Install dependencies
     - name: Install dependencies
       run: uv sync
       shell: bash
