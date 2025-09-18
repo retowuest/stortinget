@@ -1,0 +1,36 @@
+name: "UV Setup"
+description: "Set up uv, cache dependencies, and install project packages"
+
+inputs:
+  workdir:
+    description: "Working directory"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    # 1. Set up uv
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "latest"
+        enable-cache: true
+
+    # 2. Cache uv dependencies
+    - name: Cache uv
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/uv
+          ~/.local/share/uv
+          .venv
+        key: uv-${{ hashFiles('uv.lock') }}
+        restore-keys: |
+          uv-
+
+    # 3. Install dependencies
+    - name: Install dependencies
+      run: uv sync
+      shell: bash
+      working-directory: ${{ inputs.workdir }}
