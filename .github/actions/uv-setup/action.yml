@@ -1,18 +1,14 @@
-name: UV Setup
-
-on:
-  workflow_call:
-    inputs:
-      workdir:
-        required: false
-        type: string
-        default: "."
-
-jobs:
-  uv-setup:
-    runs-on: ubuntu-latest
-    steps:
-      # 1. Checkout repository
+name: "UV Setup"
+description: "Set up uv, cache dependencies, and install project packages"
+inputs:
+  workdir:
+    description: "Working directory"
+    required: false
+    default: "."
+runs:
+  using: "composite"
+  steps:
+    # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -38,3 +34,5 @@ jobs:
       # 4. Install dependencies
       - name: Install dependencies
         run: uv sync
+        shell: bash
+        working-directory: ${{ inputs.workdir }}

@@ -9,9 +9,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      # 1a. Set up uv via reusable workflow
+      # 1a. Set up uv via composite action
       - name: Set up uv
-        uses: ./.github/workflows/uv-setup.yml
+        uses: ./.github/actions/uv-setup
 
       # 1b. Run Ruff lint
       - name: Run Ruff lint
@@ -32,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      # 2a. Set up uv via reusable workflow
+      # 2a. Set up uv via composite action
       - name: Set up uv
-        uses: ./.github/workflows/uv-setup.yml
+        uses: ./.github/actions/uv-setup
 
       # 2b. Run pytest
       - name: Run pytest
@@ -47,9 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      # 3a. Set up uv via reusable workflow
+      # 3a. Set up uv via composite action
       - name: Set up uv
-        uses: ./.github/workflows/uv-setup.yml
+        uses: ./.github/actions/uv-setup
 
       # 3b. Cache DuckDB dev database
       - name: Cache DuckDB dev database
@@ -77,9 +77,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pytest, dbt]
     steps:
-      # 4a. Set up uv via reusable workflow
+      # 4a. Set up uv via composite action
       - name: Set up uv
-        uses: ./.github/workflows/uv-setup.yml
+        uses: ./.github/actions/uv-setup
 
       # 4b. Run pre-commit hooks
       - name: Run pre-commit hooks
